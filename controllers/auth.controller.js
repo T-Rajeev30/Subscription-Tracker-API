@@ -38,7 +38,7 @@ export const signUp = async (req, res, next) => {
     );
 
     const token = jwt.sign({ userId: newUser[0]._id }, JWT_SECRET, {
-      expiresIn: String(JWT_EXPIRY),
+      expiresIn: "1d",
     });
     ///
     await session.commitTransaction();
@@ -62,8 +62,40 @@ export const signUp = async (req, res, next) => {
 
 export const signIn = async (req, res, next) => {
   // implement signin logic here
+
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      const error = new Error("User not Found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      const error = new Error("Invalid Password");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User signed in SuccessFully",
+      data: {
+        token,
+        user,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const signOut = async (req, res, next) => {
-  // implement signin logic here
-};
+export const signOut = async (req, res, next) => {};
