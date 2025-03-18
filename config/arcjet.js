@@ -7,8 +7,9 @@ const aj = arcjet({
     shield({ mode: "LIVE" }),
     detectBot({
       mode: "LIVE",
-      allow: ["CATEGORY:SEARCH_ENGINE"],
+      allow: ["CATEGORY:SEARCH_ENGINE", "USER_AGENT:PostmanRuntime/7.29.2"],
     }),
+
     tokenBucket({
       mode: "LIVE",
       refillRate: 5,

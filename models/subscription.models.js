@@ -10,6 +10,9 @@ const subscriptionSchema = new mongoose.Schema(
       maxLength: 100,
     },
     price: {
+      type: Number,
+    },
+    currency: {
       type: String,
       enum: ["USD", "EUR", "GBP"],
       default: "USD",
@@ -70,7 +73,6 @@ const subscriptionSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 subscriptionSchema.pre("save", function (next) {
   if (!this.renewalDate) {
     const renewalPeriods = {
@@ -92,3 +94,5 @@ subscriptionSchema.pre("save", function (next) {
 });
 
 const Subcription = mongoose.model("Subscription", subscriptionSchema);
+
+export default Subcription;
